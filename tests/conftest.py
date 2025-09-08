@@ -1,3 +1,5 @@
+"Содержит файл фикстатуры для тестировки."
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -6,24 +8,17 @@ from app.main import app
 from app.database import Base, get_db
 from app.models import User, Task
 
-SQLALCHEMY_DATABASE_URL = (
-    "sqlite:///./test.db"  # URL подключения к тестовой базе данных
-)
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
-"""  
-Двигатель SQLAlchemy для тестовой базы данных
-"""
+"""Двигатель SQLAlchemy для тестовой базы данных."""
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture(scope="function")
 def db():
-    """
-    Создает базу данных перед каждым тестом и удаляет после
-    """
+    """Создает базу данных перед каждым тестом и удаляет после."""
 
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
@@ -36,11 +31,7 @@ def db():
 
 @pytest.fixture
 def client(db):
-    """
-    Фиксатура для создания тестового клиента FastAPI
-
-    Переопределяет зависимость get_db для тестов
-    """
+    """Фиксатура для создания тестового клиента FastAPI. Переопределяет зависимость get_db для тестов."""
 
     def override_get_db():
         try:
@@ -54,11 +45,7 @@ def client(db):
 
 @pytest.fixture
 def test_user(db):
-    """
-    Фиксатура для создания тестового пользователя
-
-    Создает пользователя в базе данных
-    """
+    """Фиксатура для создания тестового пользователя. Создает пользователя в базе данных."""
     user = User(
         email="test@example.com",
         password="password123",
@@ -72,11 +59,7 @@ def test_user(db):
 
 @pytest.fixture
 def test_task(db, test_user):
-    """
-    Фиксатура для создания тестовой задачи
-
-    Создает задачу, привязанную к тестовому пользователю
-    """
+    """Фиксатура для создания тестовой задачи. Создает задачу, привязанную к тестовому пользователю."""
     task = Task(
         title="Test Task",
         description="This is a test task",

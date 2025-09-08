@@ -1,13 +1,13 @@
+"""Файл содержит модель задачи класса User."""
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
-""" 
-Модель пользователя
-"""
-
 
 class User(Base):
+    """Модель пользователя."""
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

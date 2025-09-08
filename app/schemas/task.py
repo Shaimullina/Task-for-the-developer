@@ -1,12 +1,12 @@
+"""Модуль содержит схемы Pydantic для работы с задачами в приложении."""
+
 from pydantic import BaseModel
 from typing import Optional
 from enum import Enum
 
 
 class TaskStatus(str, Enum):
-    """
-    Возможные статусы задачи
-    """
+    """Возможные статусы задачи."""
 
     new = "новая"
     in_progress = "в процессе"
@@ -14,9 +14,7 @@ class TaskStatus(str, Enum):
 
 
 class TaskCreate(BaseModel):
-    """
-    Модель создания задачи
-    """
+    """Модель создания задачи."""
 
     title: str
     description: Optional[str] = None
@@ -24,9 +22,7 @@ class TaskCreate(BaseModel):
 
 
 class TaskUpdate(BaseModel):
-    """
-    Модель апдейта задачи
-    """
+    """Модель апдейта задачи."""
 
     title: Optional[str] = None
     description: Optional[str] = None
@@ -34,19 +30,15 @@ class TaskUpdate(BaseModel):
 
 
 class TaskRead(BaseModel):
-    """
-    Модель для представления задачи в ответе
-    """
+    """Модель для представления задачи в ответе."""
 
-    id: int  # уникальный идентификатор
+    id: int
     title: str
     description: Optional[str] = None
     status: TaskStatus
     user_id: int
 
     class Config:
-        """
-        Конфигурация модели
-        """
+        """Конфигурация модели."""
 
         orm_mode = True

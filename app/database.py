@@ -1,10 +1,10 @@
+"""Модуль создания базы данных приложения."""
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
-
-SQL_DB_URL = "sqlite:///./basenew.db"  # URL подключения к базе данных
 
 
 engine = create_engine(
@@ -16,16 +16,10 @@ session_local = sessionmaker(
 )  # Фабрика сессий SQLAlchemy
 
 Base = declarative_base()
-"""
-Базовый класс для ORM-моделей
-
-"""
 
 
 def get_db():
-    """
-    Функция-генератор для получения сессии базы данных
-    """
+    """Функция-генератор для получения сессии базы данных."""
     try:
         db = session_local()
         yield db

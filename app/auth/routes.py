@@ -1,8 +1,10 @@
+"""Модуль для работы с аутентификацией и авторизацией в приложении."""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, Token
+from app.schemas.user import Token
 from app.auth.jwt_handler import create_access_token
 from app.config import settings
 from passlib.context import CryptContext
@@ -15,17 +17,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def verify_password(plain_password, hashed_password):
-    """
-    Проверка на хегированный пароль(соответствие)
-
-    """
+    """Проверка на хешированный пароль(соответствие)."""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password):
-    """
-    Создает хеш пароля
-    """
+    """Создает хеш пароля."""
     return pwd_context.hash(password)
 
 
@@ -33,11 +30,11 @@ def get_password_hash(password):
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
-    """
-    Обработка токена доступа
-    """
-    user = db.query(User).filter(UserCreate.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    """Обработка токена доступа."""
+    user = db.query(User).filter(User.email == form_data.username).first()
+    if not user or not verify_password(
+        plain_password=form_data.password, hashed_password=user.hashed_password
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверные учетные данные",

@@ -1,3 +1,5 @@
+"""Файл содержит все эндпоинты, который применяются к задачам."""
+
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -13,15 +15,11 @@ router = APIRouter()
 @router.post("/tasks", response_model=TaskRead)
 async def create_tasks(
     task: TaskCreate,
-    user_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Создание задачи новой
-    """
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
+    """.Создание задачи новой."""
+    if not current_user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
 
     new_task = Task(
@@ -44,9 +42,7 @@ def get_tasks(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Получение конкретных задач пользователя
-    """
+    """Получение конкретных задач пользователя."""
     tasks = (
         db.query(Task)
         .filter(Task.user_id == current_user.id)
@@ -65,9 +61,7 @@ async def update_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Обновление задачи
-    """
+    """Обновление задачи."""
     task = (
         db.query(Task)
         .filter(Task.id == task_id, Task.user_id == current_user.id)
@@ -90,9 +84,7 @@ async def delete_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Удаление задачи
-    """
+    """Удаление задачи."""
     task = (
         db.query(Task)
         .filter(Task.id == task_id, Task.user_id == current_user.id)
